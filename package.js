@@ -6,7 +6,7 @@ Package.describe({
     "name": 'nvd3:nvd3',
     summary: 'Nvd3.org charts.',
     version: '1.8.6-s-1',
-    git: "https://github.com/novus/nvd3.git"
+    git: "https://github.com/songkaige/nvd3.git"
 });
 Package.on_use(function (api) {
     api.versionsFrom("METEOR@1.0");

@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.6-dev (https://github.com/novus/nvd3) 2018-08-06 */
+/* nvd3 version 1.8.6-s-1 (https://github.com/songkaige/nvd3) 2018-08-06 */
 (function(){
 
 // set up main nv object
@@ -12678,7 +12678,7 @@ nv.models.multiBarWithFocusChart = function() {
         , focusEnable = false
         , focusShowAxisY = false
         , focusShowAxisX = true
-        , focusHeight = 50
+        , focusHeight = 40
         , showXAxis = true
         , showYAxis = true
         , rightAlignYAxis = false
@@ -19380,6 +19380,6 @@ nv.models.sunburstChart = function() {
 
 };
 
-nv.version = "1.8.6-dev";
+nv.version = "1.8.6-s-1";
 })();
 //# sourceMappingURL=nv.d3.js.map
