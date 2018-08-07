@@ -14,21 +14,20 @@ nv.models.multiBarWithFocusChart = function() {
         , legend = nv.models.legend()
         , controls = nv.models.legend()
         , brush = d3.svg.brush() 
-        , focus = {height:40,showXAxis:true}
         ;
 
     var margin = {top: 30, right: 20, bottom: 250, left: 60}
         , margin2 = {top: 0, right: 30, bottom: 20, left: 60}
         , width = null
         , height = null
-        , height2 = 100
+        , height2 = 50
         , color = nv.utils.defaultColor()
         , showControls = true
         , controlLabels = {}
         , showLegend = true
         , focusEnable = false
         , focusShowAxisY = false
-        , focusShowAxisX = true
+        , focusShowAxisX = false
         , focusHeight = 40
         , showXAxis = true
         , showYAxis = true
@@ -625,13 +624,11 @@ nv.models.multiBarWithFocusChart = function() {
     chart.x2Axis = x2Axis;
     chart.y2Axis = y2Axis;
     chart.options = nv.utils.optionsFunc.bind(chart);
-    chart.focus = focus;
-
     chart._options = Object.create({}, {
         // simple options, just get/set the necessary values
         width:      {get: function(){return width;}, set: function(_){width=_;}},
         height:     {get: function(){return height;}, set: function(_){height=_;}},
-        focusHeight:     {get: function(){return focus.height();}, set: function(_){focus.height(_);}},
+        focusHeight:     {get: function(){return height2;}, set: function(_){height2=_;}},
         showLegend: {get: function(){return showLegend;}, set: function(_){showLegend=_;}},
         brushExtent: {get: function(){return brushExtent;}, set: function(_){brushExtent=_;}},
         showControls: {get: function(){return showControls;}, set: function(_){showControls=_;}},
@@ -646,7 +643,7 @@ nv.models.multiBarWithFocusChart = function() {
         rotateLabels:    {get: function(){return rotateLabels;}, set: function(_){rotateLabels=_;}},
         staggerLabels:    {get: function(){return staggerLabels;}, set: function(_){staggerLabels=_;}},
         focusEnable:    {get: function(){return focusEnable;}, set: function(_){focusEnable=_;}},
-        focusShowAxisX:    {get: function(){return focus.showXAxis();}, set: function(_){focus.showXAxis(_);}},
+        focusShowAxisX:    {get: function(){return focusShowAxisX;}, set: function(_){focusShowAxisX=_;}},
         focusShowAxisY:    {get: function(){return focusShowAxisY;}, set: function(_){focusShowAxisY=_;}},
 
         // options that require extra logic in the setter
