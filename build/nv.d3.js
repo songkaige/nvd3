@@ -12872,10 +12872,10 @@ nv.models.multiBarWithFocusChart = function() {
             var contextEnter = gEnter.append('g').attr('class', 'nv-context');
             contextEnter.append('g').attr('class', 'nv-x nv-axis');
             contextEnter.append('g').attr('class', 'nv-y nv-axis');
-            contextEnter.append('g').attr('class', 'nv-barsWrap').attr('transform', 'translate(0,30)');;
+            contextEnter.append('g').attr('class', 'nv-barsWrap');
 
-            contextEnter.append('g').attr('class', 'nv-brushBackground').attr('transform', 'translate(0,30)');
-            contextEnter.append('g').attr('class', 'nv-x nv-brush').attr('transform', 'translate(0,30)');
+            contextEnter.append('g').attr('class', 'nv-brushBackground');
+            contextEnter.append('g').attr('class', 'nv-x nv-brush');
 
             // Legend
             if (showLegend) {
@@ -13246,14 +13246,14 @@ nv.models.multiBarWithFocusChart = function() {
     // Event Handling/Dispatching (out of chart's scope)
     //------------------------------------------------------------
 
-    multibar.dispatch.on('elementMouseover.tooltip', function(e) {
-        e.pos = [e.pos[0] +  margin.left, e.pos[1] + margin.top];
-        dispatch.tooltipShow(e);
-    });
+    // multibar.dispatch.on('elementMouseover.tooltip', function(e) {
+    //     e.pos = [e.pos[0] +  margin.left, e.pos[1] + margin.top];
+    //     dispatch.tooltipShow(e);
+    // });
 
-    multibar.dispatch.on('elementMouseout.tooltip', function(e) {
-        dispatch.tooltipHide(e);
-    });
+    // multibar.dispatch.on('elementMouseout.tooltip', function(e) {
+    //     dispatch.tooltipHide(e);
+    // });
     // dispatch.on('tooltipHide', function() {
     //     if (tooltips) nv.tooltip.cleanup();
     // });
