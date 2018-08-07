@@ -223,10 +223,10 @@ nv.models.multiBarWithFocusChart = function() {
             var contextEnter = gEnter.append('g').attr('class', 'nv-context');
             contextEnter.append('g').attr('class', 'nv-x nv-axis');
             contextEnter.append('g').attr('class', 'nv-y nv-axis');
-            contextEnter.append('g').attr('class', 'nv-barsWrap').attr('translate', 'translate(0,30)');;
+            contextEnter.append('g').attr('class', 'nv-barsWrap').attr('transform', 'translate(0,30)');;
 
-            contextEnter.append('g').attr('class', 'nv-brushBackground').attr('translate', 'translate(0,30)');
-            contextEnter.append('g').attr('class', 'nv-x nv-brush').attr('translate', 'translate(0,30)');
+            contextEnter.append('g').attr('class', 'nv-brushBackground').attr('transform', 'translate(0,30)');
+            contextEnter.append('g').attr('class', 'nv-x nv-brush').attr('transform', 'translate(0,30)');
 
             // Legend
             if (showLegend) {
