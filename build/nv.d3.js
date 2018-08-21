@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.6-dev (https://github.com/songkaige/nvd3) 2018-08-07 */
+/* nvd3 version 1.8.6-dev (https://github.com/songkaige/nvd3) 2018-08-21 */
 (function(){
 
 // set up main nv object
@@ -12658,11 +12658,13 @@ nv.models.multiBarWithFocusChart = function() {
         , multibar2 = nv.models.multiBar()
         , xAxis = nv.models.axis()
         , yAxis = nv.models.axis()
+        , interactiveLayer = nv.interactiveGuideline()
         , x2Axis = nv.models.axis()
         , y2Axis = nv.models.axis()
         , legend = nv.models.legend()
         , controls = nv.models.legend()
         , brush = d3.svg.brush() 
+        , tooltip = nv.models.tooltip()
         ;
 
     var margin = {top: 30, right: 20, bottom: 250, left: 60}
@@ -12685,10 +12687,6 @@ nv.models.multiBarWithFocusChart = function() {
         , staggerLabels = false
         , rotateLabels = 0
         , tooltips = true
-        , tooltip = function(key, x, y, e, graph) {
-            return '<h3>' + key + '</h3>' +
-                '<p>' +  y + ' on ' + x + '</p>'
-        }
         , x //can be accessed via chart.xScale()
         , y //can be accessed via chart.yScale()
         , x2
@@ -12700,6 +12698,7 @@ nv.models.multiBarWithFocusChart = function() {
         , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'brush', 'stateChange', 'changeState', 'renderEnd')
         , controlWidth = function() { return showControls ? 180 : 0 }
         , duration = 250
+        , useInteractiveGuideline = false
         ;
 
     state.stacked = false // DEPRECATED Maintained for backward compatibility
@@ -12730,6 +12729,31 @@ nv.models.multiBarWithFocusChart = function() {
     y2Axis
         .orient('left')
     ;
+    interactiveLayer.tooltip
+        .valueFormatter(function(d, i) {
+            return d == null ? "N/A" : yAxis.tickFormat()(d, i);
+        })
+        .headerFormatter(function(d, i) {
+            return xAxis.tickFormat()(d, i);
+        });
+
+    interactiveLayer.tooltip
+        .valueFormatter(function (d, i) {
+            return d == null ? "N/A" : yAxis.tickFormat()(d, i);
+        })
+        .headerFormatter(function (d, i) {
+            return xAxis.tickFormat()(d, i);
+        });
+
+    interactiveLayer.tooltip
+        .duration(0)
+        .valueFormatter(function(d, i) {
+            return yAxis.tickFormat()(d, i);
+        })
+        .headerFormatter(function(d, i) {
+            return xAxis.tickFormat()(d, i);
+        });
+
     controls.updateState(false);
 
     //============================================================
@@ -13088,6 +13112,18 @@ nv.models.multiBarWithFocusChart = function() {
 
             onBrush();
 
+            //Set up interactive layer
+            if (useInteractiveGuideline) {
+                interactiveLayer
+                    .width(availableWidth)
+                    .height(availableHeight)
+                    .margin({left:margin.left, top:margin.top})
+                    .svgContainer(container)
+                    .xScale(x);
+                wrap.select(".nv-interactive").call(interactiveLayer);
+            }
+
+
             //============================================================
             // Event Handling/Dispatching (in chart's scope)
             //------------------------------------------------------------
@@ -13233,9 +13269,68 @@ nv.models.multiBarWithFocusChart = function() {
 
             }
 
+            if (useInteractiveGuideline) {
+                interactiveLayer.dispatch.on('elementMousemove', function(e) {
+                    
+                    if (e.pointXValue == undefined) return;
+
+                    var singlePoint, pointIndex, pointXLocation, xValue, allData = [];
+                    data
+                        .filter(function(series, i) {
+                            series.seriesIndex = i;
+                            return !series.disabled;
+                        })
+                        .forEach(function(series,i) {
+                            pointIndex = x.domain().indexOf(e.pointXValue)
+
+                            var point = series.values[pointIndex];
+                            if (point === undefined) return;
+
+                            xValue = point.x;
+                            if (singlePoint === undefined) singlePoint = point;
+                            if (pointXLocation === undefined) pointXLocation = e.mouseX
+                            allData.push({
+                                key: series.key,
+                                value: chart.y()(point, pointIndex),
+                                color: color(series,series.seriesIndex),
+                                data: series.values[pointIndex]
+                            });
+                        });
+
+                    interactiveLayer.tooltip
+                        .data({
+                            value: xValue,
+                            index: pointIndex,
+                            series: allData
+                        })();
+
+                    interactiveLayer.renderGuideLine(pointXLocation);
+                });
+
+                interactiveLayer.dispatch.on("elementMouseout",function(e) {
+                    interactiveLayer.tooltip.hidden(true);
+                });
+            }
+            else {
+                multibar.dispatch.on('elementMouseover.tooltip', function(evt) {
+                    evt.value = chart.x()(evt.data);
+                    evt['series'] = {
+                        key: evt.data.key,
+                        value: chart.y()(evt.data),
+                        color: evt.color
+                    };
+                    tooltip.data(evt).hidden(false);
+                });
+
+                multibar.dispatch.on('elementMouseout.tooltip', function(evt) {
+                    tooltip.hidden(true);
+                });
+
+                multibar.dispatch.on('elementMousemove.tooltip', function(evt) {
+                    tooltip();
+                });
+            }
         });
-
-
 
         renderWatch.renderEnd('multibarwithfocuschart immediate');
 
@@ -13273,6 +13368,8 @@ nv.models.multiBarWithFocusChart = function() {
     chart.x2Axis = x2Axis;
     chart.y2Axis = y2Axis;
     chart.options = nv.utils.optionsFunc.bind(chart);
+    chart.interactiveLayer = interactiveLayer;
+
     chart._options = Object.create({}, {
         // simple options, just get/set the necessary values
         width:      {get: function(){return width;}, set: function(_){width=_;}},
@@ -13336,6 +13433,9 @@ nv.models.multiBarWithFocusChart = function() {
         y: {get: function(){return multibar.y();}, set: function(_){
             multibar.y(_);
             multibar2.y(_);
+        }},
+        useInteractiveGuideline: {get: function(){return useInteractiveGuideline;}, set: function(_){
+            useInteractiveGuideline = _;
         }},
         barColor:  {get: function(){return multibar.barColor;}, set: function(_){
             multibar.barColor(_);
