@@ -123,17 +123,6 @@ nv.models.multiBarWithFocusChart = function() {
 
     var renderWatch = nv.utils.renderWatch(dispatch);
     var stacked = false;
-
-    var showTooltip = function(e, offsetElement) {
-        var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
-            top = e.pos[1] + ( offsetElement.offsetTop || 0),
-            x = xAxis.tickFormat()(multibar.x()(e.point, e.pointIndex)),
-            y = yAxis.tickFormat()(multibar.y()(e.point, e.pointIndex)),
-            content = tooltip(e.series.key, x, y, e, chart);
-
-        nv.tooltip.show([left, top], content, e.value < 0 ? 'n' : 's', null, offsetElement);
-    };
-
     var stateGetter = function(data) {
         return function(){
             return {
@@ -161,8 +150,7 @@ nv.models.multiBarWithFocusChart = function() {
         if (showYAxis) renderWatch.models(yAxis);
 
         selection.each(function(data) {
-            var container = d3.select(this),
-                that = this;
+            var container = d3.select(this);
             nv.utils.initSVG(container);
             var availableWidth = (width  || parseInt(container.style('width')) || 960)
                     - margin.left - margin.right,
@@ -522,14 +510,6 @@ nv.models.multiBarWithFocusChart = function() {
 
                 chart.update();
             });
-
-            // dispatch.on('tooltipShow', function(e) {
-            //     if (tooltips) showTooltip(e, that.parentNode)
-            // });
-
-            // dispatch.on('tooltipHide', function() {
-            //     if (tooltips) nv.tooltip.cleanup();
-            // });
 
             // Update chart from a state object passed to event handler
             dispatch.on('changeState', function(e) {
