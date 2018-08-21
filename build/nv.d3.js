@@ -12729,6 +12729,16 @@ nv.models.multiBarWithFocusChart = function() {
     y2Axis
         .orient('left')
     ;
+
+    tooltip
+    .duration(0)
+    .valueFormatter(function(d, i) {
+        return yAxis.tickFormat()(d, i);
+    })
+    .headerFormatter(function(d, i) {
+        return xAxis.tickFormat()(d, i);
+    });
+
     interactiveLayer.tooltip
         .valueFormatter(function(d, i) {
             return d == null ? "N/A" : yAxis.tickFormat()(d, i);
@@ -13368,6 +13378,7 @@ nv.models.multiBarWithFocusChart = function() {
     chart.x2Axis = x2Axis;
     chart.y2Axis = y2Axis;
     chart.options = nv.utils.optionsFunc.bind(chart);
+    chart.tooltip = tooltip;
     chart.interactiveLayer = interactiveLayer;
 
     chart._options = Object.create({}, {
