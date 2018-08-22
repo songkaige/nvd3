@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.6-dev (https://github.com/songkaige/nvd3) 2018-08-21 */
+/* nvd3 version 1.8.6-dev (https://github.com/songkaige/nvd3) 2018-08-22 */
 (function(){
 
 // set up main nv object
@@ -12924,6 +12924,9 @@ nv.models.multiBarWithFocusChart = function() {
                     .attr('transform', 'translate(' + controlWidth() + ',' + (-margin.top) +')');
             }
 
+            // hide or show the focus context chart
+            g.select('.nv-context').style('display', focusEnable ? 'initial' : 'none');
+            
             // Controls
             if (showControls) {
                 var controlsData = [

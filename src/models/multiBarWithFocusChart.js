@@ -275,6 +275,9 @@ nv.models.multiBarWithFocusChart = function() {
                     .attr('transform', 'translate(' + controlWidth() + ',' + (-margin.top) +')');
             }
 
+            // hide or show the focus context chart
+            g.select('.nv-context').style('display', focusEnable ? 'initial' : 'none');
+            
             // Controls
             if (showControls) {
                 var controlsData = [
